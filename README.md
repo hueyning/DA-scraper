@@ -3,6 +3,10 @@ DeviantArt Image Scraper
 <hr>
 Webscraper for scraping https://www.deviantart.com/ using Python's Scrapy module.
 
+Outputs:
+- Images in DA-images folder.
+- Image data (faves, comments, artist) in 'image-data.json'.
+
 Currently only working in Jupyter Notebook file. 
 
 To-do:
@@ -10,5 +14,6 @@ To-do:
 - Edit start_urls - should be more robust.
 - Implement delay timer.
 - Get scraper to work as independent scrapy module.
+
 
 

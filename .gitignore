@@ -1,0 +1,5 @@
+# ignore output images folder
+DA-images/
+
+# ignore output json file
+*.json
