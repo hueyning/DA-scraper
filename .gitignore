@@ -1,5 +1,8 @@
-# ignore output images folder
-DA-images/
+# ignore output images
+DA-images/*
+
+# include the folder instruction readme
+!DA-images/image-store-readme.md
 
 # ignore output json file
 *.json
