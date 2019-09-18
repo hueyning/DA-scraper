@@ -8,6 +8,7 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+import logging
 
 BOT_NAME = 'DAImageScraper'
 
@@ -21,8 +22,18 @@ DEFAULT_ITEM_CLASS = 'DAImageScraper.items'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
-ITEM_PIPELINES = {'scrapy.pipelines.images.ImagesPipeline': 1}
-IMAGES_STORE = 'DA-images'
+
+LOG_LEVEL = logging.INFO
+IMAGES_STORE = 'cyberpunk/images'  # store images
+FEED_FORMAT = 'json' # store image data as json format
+FEED_URI = 'cyberpunk/image-data.json'  # store image data
+DOWNLOAD_FAIL_ON_DATALOSS = False  # if image download fails, don't send error message, just flag it.
+
+# Configure item pipelines
+# See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+ITEM_PIPELINES = {
+    'DAImageScraper.pipelines.MyImagesPipeline': 300,
+}
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -65,11 +76,6 @@ IMAGES_STORE = 'DA-images'
 #    'scrapy.extensions.telnet.TelnetConsole': None,
 #}
 
-# Configure item pipelines
-# See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'DAImageScraper.pipelines.DaimagescraperPipeline': 300,
-#}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
