@@ -25,9 +25,10 @@ ROBOTSTXT_OBEY = True
 
 LOG_LEVEL = logging.INFO
 IMAGES_STORE = 'cyberpunk/images'  # store images
-FEED_FORMAT = 'json' # store image data as json format
+FEED_FORMAT = 'json'  # store image data as json format
 FEED_URI = 'cyberpunk/image-data.json'  # store image data
-DOWNLOAD_FAIL_ON_DATALOSS = False  # if image download fails, don't send error message, just flag it.
+DUPEFILTER_DEBUG = True
+#DOWNLOAD_FAIL_ON_DATALOSS = False  # if image download fails, don't send error message, just flag it.
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
@@ -41,13 +42,13 @@ ITEM_PIPELINES = {
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+#DOWNLOAD_DELAY = 0.25
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False

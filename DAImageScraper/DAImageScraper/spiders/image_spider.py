@@ -6,12 +6,15 @@ class ImageSpider(scrapy.Spider):
     name = 'image-spider'
 
     start_urls = [
-        'https://www.deviantart.com/search/deviations/visual-art/original-work?order=popular-all-time&page=0&q=cyberpunk']
+        'https://www.deviantart.com/search/deviations/visual-art/original-work/digital-art?limit=60&order=popular-all-time&page=0&q=cyberpunk', # max page limit is 60 for some reason
+    ]
 
     # initialize page at 0
     page = 0
     # set page limit to control the amount of images downloaded
-    page_limit = 2
+    page_limit = 100
+    # number of images found
+    img_count = 0
 
 
     def parse(self, response):
@@ -20,6 +23,8 @@ class ImageSpider(scrapy.Spider):
 
         # get list of image links from the page
         img_links = response.css('div[class=_2tv7Y] a[data-hook="deviation_link"]::attr(href)').getall()
+        self.logger.info(f'Found {len(img_links)} images on page')
+        self.img_count += len(img_links)
 
         for link in img_links:
             yield scrapy.Request(link, callback=self.parse_image)
@@ -27,10 +32,14 @@ class ImageSpider(scrapy.Spider):
         # go to next page
         while self.page < self.page_limit:
             self.page += 1  # increment page by 1
-            next_page = f'https://www.deviantart.com/search/deviations/visual-art/original-work?order=popular-all-time&page={self.page}&q=cyberpunk'
+            next_page = f'https://www.deviantart.com/search/deviations/visual-art/original-work/digital-art?limit=60&order=popular-all-time&page={self.page}&q=cyberpunk'
             yield scrapy.Request(next_page, callback=self.parse)
 
+        self.logger.info(f'Total images parsed should be {self.img_count} images.')
+
     def parse_image(self, response):
+
+        self.logger.info(f'Scraping image: {response.url}')
 
         # initialize image item
         image = ImageItem()
@@ -57,19 +66,19 @@ class ImageSpider(scrapy.Spider):
         image['comments'] = stats[1]
         image['views'] = stats[2]
 
+        yield image
         # get artist info
         artist_name = response.css('a[data-hook="user_link"]::attr(title)').get()
 
-        if artist_name:
-            image['artists'] = response.css('a[data-hook="user_link"]::attr(title)').get()
-            artist_gallery = response.css('a[data-hook="user_link"]::attr(href)').get()
-            image['artist_urls'] = artist_gallery.replace('gallery',
-                                                          'about')  # replace the /gallery pointer to /about
-            request = scrapy.Request(image['artist_urls'], callback=self.parse_artist, meta={'image': image})
-            yield request
-        else:  # if no artist name (sometimes artists are banned), just yield the image
-            image['artists'] = 'Banned'
-            yield image
+        #if artist_name:
+        #    image['artists'] = response.css('a[data-hook="user_link"]::attr(title)').get()
+        #    artist_gallery = response.css('a[data-hook="user_link"]::attr(href)').get()
+        #    image['artist_urls'] = artist_gallery.replace('gallery', 'about')  # replace the /gallery pointer to /about
+        #    request = scrapy.Request(image['artist_urls'], callback=self.parse_artist, meta={'image': image})
+        #    yield request
+        #else:  # if no artist name (sometimes artists are banned), just yield the image
+        #    image['artists'] = 'Banned'
+        #    yield image
 
     def parse_artist(self, response):
 
